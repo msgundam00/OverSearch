@@ -71,12 +71,13 @@ public class OverWatchApiUtils {
         //System.out.println("get Profile finished");
         return overClient;
     }
-
+    /*
     public static void main(String [] args) throws Exception {
         String m = "망겜전문가#3983";
-        String n = "그렌라간#31288";
+        String n = "잔치국수#3418";//"그렌라간#31288";
         OverClient oc = getProfile(n);
 
         System.out.println("bye");
     }
+    */
 }
