@@ -6,19 +6,24 @@ package oversearch.client;
 public class OverClient {
     public OverClient(int hashId) {
         this.hashId = hashId;
+        this.mostPlay = new HeroPlay[3];
     }
 
-    public enum Charactor {
-        DVa("D.Va");
+    public class HeroPlay {
+        //DVa("D.Va");
 
         String name;
-        Charactor(String name) {
+        String time;
+
+        HeroPlay(String name, String time) {
             this.name = name;
+            this.time = time;
         }
 
         public String getName() {
             return name;
         }
+        public String getTime() { return time; }
     }
 
     public enum RankType {
@@ -80,8 +85,17 @@ public class OverClient {
     }
 
     final int hashId;
-    int overall;
-    Charactor[] mostPlay;
+    int id_level;  //그냥 레벨
+    int overall;  // 경쟁전 점수
+    HeroPlay[] mostPlay;
+
+    public void setID_Level(int lv) { this.id_level = lv; }
+    public void setOverall(int score) { this.overall = score; }
+    public void setMostPlay(String[] hero, String[] time) {
+        for(int i=0; i<hero.length ; i++) {
+            mostPlay[i] = new HeroPlay(hero[i], time[i]);
+        }
+    }
 
     public static OverClient parse(String tag) throws Exception {
         return null;
