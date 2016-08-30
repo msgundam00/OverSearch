@@ -1,26 +1,10 @@
 package oversearch.utils;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.json.JsonObjectDecoder;
-import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import oversearch.client.OverClient;
 
-import java.io.IOException;
-import java.net.URI;
 import java.net.URLEncoder;
 
 /**
@@ -34,7 +18,6 @@ public class OverWatchApiUtils {
     static final String css_get_hero_time = ".bar-text > .description"; //[0] 1순위 [1] 2순위 [3] 3순위 영웅 플레이 시간
 
     //static int hashID = 0; //임시
-
 
     public static String getApiBT(String tag) {
         return tag.replace("#", "-");
@@ -71,13 +54,4 @@ public class OverWatchApiUtils {
         //System.out.println("get Profile finished");
         return overClient;
     }
-    /*
-    public static void main(String [] args) throws Exception {
-        String m = "망겜전문가#3983";
-        String n = "잔치국수#3418";//"그렌라간#31288";
-        OverClient oc = getProfile(n);
-
-        System.out.println("bye");
-    }
-    */
 }
