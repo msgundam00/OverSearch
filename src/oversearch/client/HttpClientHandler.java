@@ -1,9 +1,6 @@
 package oversearch.client;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
@@ -13,9 +10,11 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
  */
 public class HttpClientHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String path;
+    private ChannelHandler wsHandler;
 
-    public HttpClientHandler(String path) {
+    public HttpClientHandler(String path, ChannelHandler handler) {
         this.path = path;
+        this.wsHandler = handler;
     }
 
     @Override
@@ -30,7 +29,7 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<FullHttpReque
                     h.handshake(ctx.channel(), req).addListener((ChannelFuture f) -> {
                         // replace the handler when done handshaking
                         ChannelPipeline p = f.channel().pipeline();
-                        //p.replace(HttpClientHandler.class, "wsHandler", wsHandler);
+                        p.replace(HttpClientHandler.class, "wsHandler", wsHandler);
                     });
                 }
             } finally {

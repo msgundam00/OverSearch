@@ -13,7 +13,9 @@ import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.logging.LoggingHandler;
 import oversearch.client.*;
 import oversearch.search.HttpSearchHandler;
+import oversearch.utils.ClientPool;
 import oversearch.utils.HttpNotFoundHandler;
+import oversearch.utils.HttpStaticFileHandler;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -23,6 +25,10 @@ import static oversearch.client.OverClient.*;
  * Created by msgundam00 on 2016. 8. 17..
  */
 public final class OverSearchServer {
+    public static int PORT_NUM = 8080;
+    public static String CLIENT_POST_FIX = "/register";
+    public static String SEARCH_POST_FIX = "/search";
+
     public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -31,7 +37,10 @@ public final class OverSearchServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class);
 
-            CopyOnWriteArrayList<OverClient>[] clientPool = new CopyOnWriteArrayList[RankType.values().length];
+            ClientPool[] clientPools = new ClientPool[RankType.values().length];
+            for (RankType r : RankType.values()) {
+                clientPools[r.getIndex()] = new ClientPool(r);
+            }
 
             b.handler(new LoggingHandler())
                     .childHandler(new ChannelInitializer<SocketChannel>() {
@@ -39,15 +48,15 @@ public final class OverSearchServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new HttpServerCodec())
                                     .addLast(new HttpObjectAggregator(65536))
-                                    .addLast(new HttpSearchHandler("/search"))
-                                    .addLast(new ClientRegisterHandler("/register", clientPool))
-                                    .addLast(new HttpClientHandler("/register"))
-                                    .addLast(new JsonObjectDecoder())
+                                    .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPools))
+                                    .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPools))
+                                    .addLast(new HttpClientHandler(CLIENT_POST_FIX, new OverClientWSHandler()))
+                                    .addLast(new HttpStaticFileHandler())
                                     .addLast(new HttpNotFoundHandler());
                         }
                     });
 
-            ChannelFuture f = b.bind(8080).sync();
+            ChannelFuture f = b.bind(PORT_NUM).sync();
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();

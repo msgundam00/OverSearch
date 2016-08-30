@@ -5,13 +5,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
+import java.util.Map;
+import java.util.concurrent.SynchronousQueue;
+
 /**
  * Created by msgundam00 on 2016. 8. 19..
  */
-public class ProfileApiHandler extends SimpleChannelInboundHandler<HttpObject> {
+public class ProfileApiHandler extends SimpleChannelInboundHandler<Object> {
     // TODO: Parseing Json
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, HttpObject req) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object req) throws Exception {
         if (req instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) req;
 
@@ -44,6 +47,9 @@ public class ProfileApiHandler extends SimpleChannelInboundHandler<HttpObject> {
                 System.err.println("} END OF CONTENT");
                 ctx.close();
             }
+        }
+        if (req instanceof Map) {
+            System.out.println("adsfasdfasdf");
         }
     }
 }
