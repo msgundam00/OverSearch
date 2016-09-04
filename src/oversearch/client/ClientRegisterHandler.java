@@ -6,6 +6,8 @@ import io.netty.handler.codec.http.*;
 import oversearch.utils.ClientPool;
 import oversearch.utils.OverWatchApiUtils;
 
+import static oversearch.client.OverClient.getType;
+
 /**
  * Created by msgundam00 on 2016. 8. 18..
  */
@@ -23,8 +25,10 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
         if (path.equals(req.uri())) {
             if (req.method() == HttpMethod.POST) {
                 String tag = req.content().toString();
-                OverWatchApiUtils.getProfile(tag);
-                // TODO: reuturn hash id && add client into pool
+
+                OverClient cli = OverWatchApiUtils.getProfile(tag);
+                clientPools[getType(cli).getIndex()].addUser(cli);
+                // TODO: reuturn hash id
                 HttpResponse res = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
             }
             else if (req.method() == HttpMethod.GET) {

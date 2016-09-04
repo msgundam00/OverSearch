@@ -97,11 +97,6 @@ public class OverClient {
         }
     }
 
-
-    public static OverClient parse(String tag) throws Exception {
-        return null;
-    }
-
     public static RankType getType(OverClient client) {
         return RankType.getType(client.overall);
     }

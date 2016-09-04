@@ -36,7 +36,7 @@ public final class OverSearchServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class);
 
-            ClientPool[] clientPools = new ClientPool[RankType.values().length];
+            final ClientPool[] clientPools = new ClientPool[RankType.values().length];
             for (RankType r : RankType.values()) {
                 clientPools[r.getIndex()] = new ClientPool(r);
             }
@@ -49,7 +49,7 @@ public final class OverSearchServer {
                                     .addLast(new HttpObjectAggregator(65536))
                                     .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPools))
                                     .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPools))
-                                    .addLast(new HttpClientHandler(CLIENT_POST_FIX, new OverClientWSHandler()))
+                                    .addLast(new HttpClientHandler(CLIENT_POST_FIX, new OverClientWSHandler(clientPools)))
                                     .addLast(new HttpStaticFileHandler())
                                     .addLast(new HttpNotFoundHandler());
                         }
