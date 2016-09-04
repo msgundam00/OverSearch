@@ -11,7 +11,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.logging.LoggingHandler;
-import oversearch.client.*;
+import oversearch.client.ClientRegisterHandler;
+import oversearch.client.HttpClientHandler;
+import oversearch.client.OverClient;
 import oversearch.search.HttpSearchHandler;
 import oversearch.utils.ClientPool;
 import oversearch.utils.HttpNotFoundHandler;
@@ -19,7 +21,7 @@ import oversearch.utils.HttpStaticFileHandler;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static oversearch.client.OverClient.*;
+import static oversearch.client.OverClient.RankType;
 
 /**
  * Created by msgundam00 on 2016. 8. 17..
