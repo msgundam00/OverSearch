@@ -4,8 +4,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
+import oversearch.client.ClientPoolWSHandler;
 import oversearch.client.OverClient;
-import oversearch.utils.ClientPool;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class HttpSearchHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String path;
-    private ClientPool[] clientPools;
+    private ClientPoolWSHandler[] clientPoolWSHandlers;
 
-    public HttpSearchHandler(String path, ClientPool[] cps) {
+    public HttpSearchHandler(String path, ClientPoolWSHandler[] cps) {
         this.path = path;
-        this.clientPools = cps;
+        this.clientPoolWSHandlers = cps;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class HttpSearchHandler extends SimpleChannelInboundHandler<FullHttpReque
     }
 
     private List<OverClient> searchClients(OverSearchOpt opt) {
-        // TODO: parse opt && get OverClient from clientPools
+        // TODO: parse opt && get OverClient from clientPoolWSHandlers
         return null;
     }
 }

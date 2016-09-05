@@ -10,11 +10,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LoggingHandler;
+import oversearch.client.ClientPoolWSHandler;
 import oversearch.client.ClientRegisterHandler;
 import oversearch.client.ClientWSHandshakeHandler;
-import oversearch.client.OverClientWSHandler;
 import oversearch.search.HttpSearchHandler;
-import oversearch.utils.ClientPool;
 import oversearch.utils.HttpNotFoundHandler;
 import oversearch.utils.HttpStaticFileHandler;
 
@@ -36,9 +35,9 @@ public final class OverSearchServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class);
 
-            final ClientPool[] clientPools = new ClientPool[RankType.values().length];
+            final ClientPoolWSHandler[] clientPoolWSHandlers = new ClientPoolWSHandler[RankType.values().length];
             for (RankType r : RankType.values()) {
-                clientPools[r.getIndex()] = new ClientPool(r);
+                clientPoolWSHandlers[r.getIndex()] = new ClientPoolWSHandler(r);
             }
 
             b.handler(new LoggingHandler())
@@ -47,10 +46,10 @@ public final class OverSearchServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new HttpServerCodec())
                                     .addLast(new HttpObjectAggregator(65536))
-                                    .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPools))
-                                    .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPools))
-                                    .addLast(new ClientWSHandshakeHandler(CLIENT_POST_FIX, new OverClientWSHandler(clientPools)))
                                     .addLast(new HttpStaticFileHandler())
+                                    .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPoolWSHandlers))
+                                    .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPoolWSHandlers))
+                                    .addLast(new ClientWSHandshakeHandler(CLIENT_POST_FIX, clientPoolWSHandlers))
                                     .addLast(new HttpNotFoundHandler());
                         }
                     });
