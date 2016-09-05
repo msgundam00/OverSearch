@@ -3,7 +3,6 @@ package oversearch.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
-import oversearch.utils.ClientPool;
 import oversearch.utils.OverWatchApiUtils;
 
 import static oversearch.client.OverClient.getType;
@@ -13,11 +12,11 @@ import static oversearch.client.OverClient.getType;
  */
 public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final String path;
-    private ClientPool[] clientPools;
+    private ClientPoolWSHandler[] clientPoolWSHandlers;
 
-    public ClientRegisterHandler(String s, ClientPool[] cps) {
-        this.path = s;
-        this.clientPools = cps;
+    public ClientRegisterHandler(String p, ClientPoolWSHandler[] cps) {
+        this.path = p;
+        this.clientPoolWSHandlers = cps;
     }
 
     @Override
