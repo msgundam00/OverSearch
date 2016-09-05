@@ -2,15 +2,6 @@
  * Created by ParkJun on 2016-09-05.
  */
 var myApp = angular.module('myRegi', []);
-myApp.config(function ($httpProvider) {
-
-    // $httpProvider에서 header 를 수정합니다.
-
-    $httpProvider.defaults.useXDomain = true;
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    //$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
-});
 myApp.controller('SearchCtrl', ['$scope', '$http', function($scope, $http) {
     $scope.search = function() {
         $scope.BT = $scope.searchBT.toString()
@@ -21,10 +12,19 @@ myApp.controller('SearchCtrl', ['$scope', '$http', function($scope, $http) {
             $scope.result += "올바르지 않은 배틀태그 형식입니다\n";
             return;
         }
-        $scope.url = /*"https://crossorigin.me/https://playoverwatch.com/ko-kr/career/pc/kr/"*/"http://localhost:8080/register";
+        $scope.url = "http://localhost:8080/register";
         $http.post($scope.url, $scope.BT).success(function(data, status) {
             $scope.status = status;
-            $scope.data = data;
+            //$scope.data = data;
+            $scope.ref = 1; //등록버튼 생성
+            $scope.wsUrl = "ws://localhost:8080"+data.postfix; //접속할 웹소켓 주소
+            $scope.wsID = data["id"]; //웹소켓 접속 ID
+            $scope.btlevel = data.level;
+            $scope.btrank = data.rank;
+            $scope.result += "level : " + $scope.btlevel + "    rank : " + $scope.btrank +"\n";
+            for(var i = 0; i<3; i++) {
+                $scope.result += data.most1[i].hero +" : " + data.most1[i].time + "\n";
+            }
             /*
             var reg_lv = /<div class="u-vertical-center">([0-9]+)<\/div>/;
             var reg_rank = /<div class="u-align-center h6">([0-9]+)<\/div>/;

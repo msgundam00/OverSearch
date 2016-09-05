@@ -1,5 +1,6 @@
 package oversearch.client;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
@@ -42,12 +43,19 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
                 clientPoolWSHandlers[getType(cli).getIndex()].addUser(cli);
 
                 String content = getUserResponse(cli);
-
+                /*
                 FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK,
                         Unpooled.copiedBuffer(content, CharsetUtil.UTF_8));
                 HttpUtil.setContentLength(res, content.length());
+                */ //왠지 모르겠는데 string으로 보내면 앵귤러가 json 받을때 오류가 있음.. 그래서 ByteBuf로 바꿔주니까 됨....
+
+                ByteBuf bb_content =  Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+                FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK,
+                        bb_content);
+                HttpUtil.setContentLength(res, bb_content.readableBytes());
                 res.headers().set(CONTENT_TYPE, "application/json");
                 ctx.writeAndFlush(res);
+
                 /*
                 HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
                 HttpUtil.setContentLength(res, content.length());
@@ -103,7 +111,26 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
                 .append(getType(cli).getIndex())
                 .append("\", \"id\" : ")
                 .append(cli.hashId)
-                .append("}");
+                .append(", \"level\" : ")
+                .append(cli.id_level)
+                .append(", \"rank\" : ")
+                .append(cli.overall)
+                .append(", \"most1\" : [")
+                .append("{\"hero\" : \"")
+                .append(cli.mostPlay[0].getName())
+                .append("\", \"time\" : \"")
+                .append(cli.mostPlay[0].getTime())
+                .append("\"}, ")
+                .append("{\"hero\" : \"")
+                .append(cli.mostPlay[1].getName())
+                .append("\", \"time\" : \"")
+                .append(cli.mostPlay[1].getTime())
+                .append("\"}, ")
+                .append("{\"hero\" : \"")
+                .append(cli.mostPlay[2].getName())
+                .append("\", \"time\" : \"")
+                .append(cli.mostPlay[2].getTime())
+                .append("\"}]}");
 
         return b.toString();
     }
