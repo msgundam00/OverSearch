@@ -26,6 +26,7 @@ public final class OverSearchServer {
     public static int PORT_NUM = 8080;
     public static String CLIENT_POST_FIX = "/register";
     public static String SEARCH_POST_FIX = "/search";
+    public static String RESOURCE_POST_FIX = "/res/client";
 
     public static String ROOT_DIR = System.getProperty("user.dir");
 
@@ -51,7 +52,7 @@ public final class OverSearchServer {
                                     .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPoolWSHandlers))
                                     .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPoolWSHandlers))
                                     .addLast(new ClientWSHandshakeHandler(CLIENT_POST_FIX, clientPoolWSHandlers))
-                                    .addLast(new HttpStaticFileHandler())
+                                    .addLast(new HttpStaticFileHandler(RESOURCE_POST_FIX))
                                     .addLast(new HttpNotFoundHandler());
                         }
                     });

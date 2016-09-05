@@ -68,7 +68,7 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
             }
             else if (req.method() == HttpMethod.GET) {
                 try {
-                    RandomAccessFile raf = new RandomAccessFile(ROOT_DIR + "/res/client/register.html", "r");
+                    RandomAccessFile raf = new RandomAccessFile(ROOT_DIR + "/res/client/register00.html", "r");
 
                     HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
                     HttpUtil.setContentLength(res, raf.length());
