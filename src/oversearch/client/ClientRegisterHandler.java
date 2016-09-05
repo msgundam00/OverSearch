@@ -26,7 +26,7 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
                 String tag = req.content().toString();
 
                 OverClient cli = OverWatchApiUtils.getProfile(tag);
-                clientPools[getType(cli).getIndex()].addUser(cli);
+                clientPoolWSHandlers[getType(cli).getIndex()].addUser(cli);
                 // TODO: reuturn hash id
                 HttpResponse res = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
             }
