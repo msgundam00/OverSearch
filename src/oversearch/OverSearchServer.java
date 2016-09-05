@@ -46,10 +46,10 @@ public final class OverSearchServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new HttpServerCodec())
                                     .addLast(new HttpObjectAggregator(65536))
-                                    .addLast(new HttpStaticFileHandler())
                                     .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPoolWSHandlers))
                                     .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPoolWSHandlers))
                                     .addLast(new ClientWSHandshakeHandler(CLIENT_POST_FIX, clientPoolWSHandlers))
+                                    .addLast(new HttpStaticFileHandler())
                                     .addLast(new HttpNotFoundHandler());
                         }
                     });
