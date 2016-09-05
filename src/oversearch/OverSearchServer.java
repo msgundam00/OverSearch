@@ -11,7 +11,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LoggingHandler;
 import oversearch.client.ClientRegisterHandler;
-import oversearch.client.HttpClientHandler;
+import oversearch.client.ClientWSHandshakeHandler;
 import oversearch.client.OverClientWSHandler;
 import oversearch.search.HttpSearchHandler;
 import oversearch.utils.ClientPool;
@@ -49,7 +49,7 @@ public final class OverSearchServer {
                                     .addLast(new HttpObjectAggregator(65536))
                                     .addLast(new HttpSearchHandler(SEARCH_POST_FIX, clientPools))
                                     .addLast(new ClientRegisterHandler(CLIENT_POST_FIX, clientPools))
-                                    .addLast(new HttpClientHandler(CLIENT_POST_FIX, new OverClientWSHandler(clientPools)))
+                                    .addLast(new ClientWSHandshakeHandler(CLIENT_POST_FIX, new OverClientWSHandler(clientPools)))
                                     .addLast(new HttpStaticFileHandler())
                                     .addLast(new HttpNotFoundHandler());
                         }
