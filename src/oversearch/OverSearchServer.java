@@ -27,6 +27,8 @@ public final class OverSearchServer {
     public static String CLIENT_POST_FIX = "/register";
     public static String SEARCH_POST_FIX = "/search";
 
+    public static String ROOT_DIR = System.getProperty("user.dir");
+
     public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
