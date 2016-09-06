@@ -32,41 +32,44 @@ public class HttpStaticFileHandler extends SimpleChannelInboundHandler<FullHttpR
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         // TODO: Pass Static Files??!!?!? Only in resDir
         if(req.method().equals(HttpMethod.GET)) {
-            this.filename = req.uri();
-            if(!filename.endsWith(CHECK_JS) && !filename.endsWith(CHECK_CSS)) {
-                //불러올수 없음을 처리
-                sendError(ctx, HttpResponseStatus.NOT_ACCEPTABLE);
+            try {
+                this.filename = req.uri();
+                if (!filename.endsWith(CHECK_JS) && !filename.endsWith(CHECK_CSS)) {
+                    //불러올수 없음을 처리
+                    sendError(ctx, HttpResponseStatus.NOT_ACCEPTABLE);
+                    return;
+                }
+                File checkfile = new File(this.path + this.filename);
+                if (!checkfile.exists() || !checkfile.isFile()) {
+                    //불러올수 없음을 처리
+                    sendError(ctx, HttpResponseStatus.NOT_FOUND);
+                    return;
+                }
+
+                RandomAccessFile raf = new RandomAccessFile(checkfile, "r");
+
+                HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
+                HttpUtil.setContentLength(res, raf.length());
+                if (filename.endsWith(CHECK_JS)) res.headers().set(CONTENT_TYPE, RESPONSE_JS);
+                else res.headers().set(CONTENT_TYPE, RESPONSE_CSS);
+                if (HttpUtil.isKeepAlive(req)) {
+                    HttpUtil.setKeepAlive(res, true);
+                }
+                ctx.write(res); // 응답 헤더 전송
+
+                ctx.write(new DefaultFileRegion(raf.getChannel(), 0, raf.length()));
+
+                ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+                if (!HttpUtil.isKeepAlive(req)) {
+                    f.addListener(ChannelFutureListener.CLOSE);
+                }
+            }
+            finally {
                 req.release();
-                return;
-            }
-            File checkfile = new File(this.path+this.filename);
-            if(!checkfile.exists() || !checkfile.isFile()) {
-                //불러올수 없음을 처리
-                sendError(ctx, HttpResponseStatus.NOT_FOUND);
-                req.release();
-                return;
-            }
-
-            RandomAccessFile raf = new RandomAccessFile(checkfile, "r");
-
-            HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
-            HttpUtil.setContentLength(res, raf.length());
-            if (filename.endsWith(CHECK_JS)) res.headers().set(CONTENT_TYPE, RESPONSE_JS);
-            else res.headers().set(CONTENT_TYPE, RESPONSE_CSS);
-            if (HttpUtil.isKeepAlive(req)) {
-                HttpUtil.setKeepAlive(res, true);
-            }
-            ctx.write(res); // 응답 헤더 전송
-
-            ctx.write(new DefaultFileRegion(raf.getChannel(), 0, raf.length()));
-
-            ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-            if (!HttpUtil.isKeepAlive(req)) {
-                f.addListener(ChannelFutureListener.CLOSE);
             }
         }
         else {
-            req.retain();
+            ctx.fireChannelRead(req);
         }
     }
 }
