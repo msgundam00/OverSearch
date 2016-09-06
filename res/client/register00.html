@@ -14,10 +14,15 @@
             <label>등록할 플레이어</label>
             <input type="text" ng-model="searchBT" class="input-medium search-query" placeholder="망겜전문가#3938">
             <button type="submit" class="btn" ng-click="search()">검색</button>
-            <button type="submit" class="btn" ng-click="register()" ng-model="registerBtn" ng-switch="" ng-switch-when="1">등록</button>
+            <button type="submit" class="btn" ng-click="registerWS()" ng-model="registerBtn" ng-switch="" ng-switch-when="1">등록</button>
             <p class="help-block">BattleTag, XBL, Gamertag 또는 PSN ID로 검색하세요!</p>
         </form>
-        <pre ng-init="result='배틀태그를 검색해주세요'">{{result}}</pre>
+        <pre ng-init="result='배틀태그를 검색해주세요'">{{result}}</pre>-
+        <div ng-model="most">
+            <div ng-repeat="most_hero in most" ng-switch="" ng-switch-when="1">
+                {{most_hero.hero}} : {{most_hero.time}}
+            </div>
+        </div>
         <script src="/custom/register.js"></script>
     </div>
 </div>

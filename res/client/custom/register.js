@@ -2,7 +2,7 @@
  * Created by ParkJun on 2016-09-05.
  */
 var myApp = angular.module('myRegi', []);
-myApp.controller('SearchCtrl', ['$scope', '$http', function($scope, $http) {
+myApp.controller('SearchCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.search = function() {
         $scope.BT = $scope.searchBT.toString()
         $scope.result = $scope.BT + "의 검색결과\n";
@@ -22,27 +22,19 @@ myApp.controller('SearchCtrl', ['$scope', '$http', function($scope, $http) {
             $scope.btlevel = data.level;
             $scope.btrank = data.rank;
             $scope.result += "level : " + $scope.btlevel + "    rank : " + $scope.btrank +"\n";
-            for(var i = 0; i<3; i++) {
-                $scope.result += data.most1[i].hero +" : " + data.most1[i].time + "\n";
-            }
-            /*
-            var reg_lv = /<div class="u-vertical-center">([0-9]+)<\/div>/;
-            var reg_rank = /<div class="u-align-center h6">([0-9]+)<\/div>/;
-            var str_lv = data.toString().match(reg_lv);
-            var str_rank = data.toString().match(reg_rank);
-            if(str_rank == null) {
-                $scope.result += $scope.BT.split('#')[0] +"  Level : " + str_lv[1] + "  Rank : 이 플레이어는 경쟁전을 하지 않았습니다.";
-            }
-            else {
-                $scope.result += $scope.BT.split('#')[0] +"  Level : " + str_lv[1] + "  Rank : "+str_rank[1];
-                //이 경우에 대해서 등록절차를 밟자...
-                $scope.ref = "1"; //등록 버튼 생성
-
+            $scope.most = data.most1;
+            /*for(var i = 0; i<3; i++) {
+                $scope.result += data.most1[i].hero + " : " + data.most1[i].time + "\n";
             }*/
         }).error(function(data, status) {
             $scope.data = data || "Request Failed";
             $scope.status = status;
             $scope.result += "없는 계정명이거나 네트워크상의 문제로 검색이 지연중입니다.";
         });
+    }
+    $scope.registerWS = function() {
+        $scope.messages = [];
+        var ws = $window.ws = new WebSocket($scope.wsUrl);
+
     }
 }]);
