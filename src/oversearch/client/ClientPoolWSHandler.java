@@ -53,7 +53,7 @@ public class ClientPoolWSHandler extends SimpleChannelInboundHandler<WebSocketFr
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame msg) throws Exception {
         if (msg instanceof TextWebSocketFrame) {
-            ctx.fireChannelRead(msg);
+            ctx.fireChannelRead(msg.retain());
         }
         else {
         }

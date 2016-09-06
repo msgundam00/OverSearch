@@ -39,17 +39,10 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
                 }
                 clientPoolWSHandlers[getType(cli).getIndex()].addUser(cli);
 
-                String content = getUserResponse(cli);
-                /*
+                ByteBuf content =  Unpooled.copiedBuffer(getUserResponse(cli), CharsetUtil.UTF_8);
                 FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK,
-                        Unpooled.copiedBuffer(content, CharsetUtil.UTF_8));
-                HttpUtil.setContentLength(res, content.length());
-                */ //왠지 모르겠는데 string으로 보내면 앵귤러가 json 받을때 오류가 있음.. 그래서 ByteBuf로 바꿔주니까 됨....
-
-                ByteBuf bb_content =  Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
-                FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK,
-                        bb_content);
-                HttpUtil.setContentLength(res, bb_content.readableBytes());
+                        content);
+                HttpUtil.setContentLength(res, content.readableBytes());
                 res.headers().set(CONTENT_TYPE, "application/json");
                 ctx.writeAndFlush(res);
             }

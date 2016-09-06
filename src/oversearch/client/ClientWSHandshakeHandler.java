@@ -20,23 +20,19 @@ public class ClientWSHandshakeHandler extends SimpleChannelInboundHandler<FullHt
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         if (req.uri().startsWith(path)) {
-            try {
-                WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
-                WebSocketServerHandshaker h = wsFactory.newHandshaker(req);
-                if (h == null) {
-                    WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
-                } else {
-                    int idx = Integer.valueOf(req.uri().substring(path.length()));
+            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
+            WebSocketServerHandshaker h = wsFactory.newHandshaker(req);
+            if (h == null) {
+                WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
+            } else {
+                int idx = Integer.valueOf(req.uri().substring(path.length()+1));
 
-                    final ChannelHandler wsHandler = clientPoolWSHandlers[idx];
-                    h.handshake(ctx.channel(), req).addListener((ChannelFuture f) -> {
-                        // replace the handler when done handshaking
-                        ChannelPipeline p = f.channel().pipeline();
-                        p.replace(ClientWSHandshakeHandler.class, "wsHandler", wsHandler);
-                    });
-                }
-            } finally {
-                req.release();
+                final ChannelHandler wsHandler = clientPoolWSHandlers[idx];
+                h.handshake(ctx.channel(), req).addListener((ChannelFuture f) -> {
+                    // replace the handler when done handshaking
+                    ChannelPipeline p = f.channel().pipeline();
+                    p.replace(ClientWSHandshakeHandler.class, "wsHandler", wsHandler);
+                });
             }
         }
         else {
