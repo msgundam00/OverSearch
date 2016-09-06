@@ -10,7 +10,6 @@ import io.netty.util.AttributeKey;
  */
 public class OverMessageHandler extends SimpleChannelInboundHandler<OverMessage> {
     private final ClientPoolWSHandler pool;
-    static final AttributeKey<Integer> typeAttr = AttributeKey.newInstance("type");
     static final AttributeKey<String > idAttr = AttributeKey.newInstance("id");
 
     public OverMessageHandler(ClientPoolWSHandler pool) {
@@ -20,12 +19,14 @@ public class OverMessageHandler extends SimpleChannelInboundHandler<OverMessage>
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         ctx.writeAndFlush(new OverMessage("HELO", "Admin"));
+        pool.getChannel().add(ctx.channel());
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
         Channel ch = ctx.channel();
         pool.getChannel().remove(ch);
+        // pool.removeUser(getId(ch));
         // TODO: send remove info
     }
 
@@ -34,9 +35,7 @@ public class OverMessageHandler extends SimpleChannelInboundHandler<OverMessage>
         Channel ch = ctx.channel();
         if (msg.cmd.equals("HELO")) {
             // Add Channel
-            int idx = Integer.valueOf(msg.target);
             setId(ch, msg.id);
-            setIndex(ch, idx);
 
             //pool.activateUser(msg.id);
             pool.getChannel().add(ch);
@@ -49,13 +48,5 @@ public class OverMessageHandler extends SimpleChannelInboundHandler<OverMessage>
 
     private String getId(Channel ch) {
         return ch.attr(idAttr).get();
-    }
-
-    private void setIndex(Channel ch, int index) {
-        ch.attr(typeAttr).set(index);
-    }
-
-    private int getIndex(Channel ch) {
-        return ch.attr(typeAttr).get();
     }
 }
