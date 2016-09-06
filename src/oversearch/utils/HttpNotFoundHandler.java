@@ -18,8 +18,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  */
 public class HttpNotFoundHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
-
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
+        sendError(ctx, HttpResponseStatus.NOT_FOUND);
     }
 
     public static void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {

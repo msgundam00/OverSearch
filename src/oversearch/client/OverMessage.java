@@ -23,8 +23,9 @@ public class OverMessage {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
+        b.append(cmd);
         if (target != null) {
-            b.append(target).append(" ").append(cmd);
+            b.append(" ").append(id).append(" ").append(target);
         }
 
         return b.toString();

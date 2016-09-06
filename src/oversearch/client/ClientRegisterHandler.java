@@ -5,11 +5,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
-import oversearch.utils.HttpNotFoundHandler;
 import oversearch.utils.OverWatchApiUtils;
 
 import java.io.RandomAccessFile;
-import java.nio.charset.Charset;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -25,7 +23,6 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
     private ClientPoolWSHandler[] clientPoolWSHandlers;
 
     public ClientRegisterHandler(String p, ClientPoolWSHandler[] cps) {
-        super(false);
         this.path = p;
         this.clientPoolWSHandlers = cps;
     }
@@ -55,24 +52,6 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
                 HttpUtil.setContentLength(res, bb_content.readableBytes());
                 res.headers().set(CONTENT_TYPE, "application/json");
                 ctx.writeAndFlush(res);
-
-                /*
-                HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
-                HttpUtil.setContentLength(res, content.length());
-                res.headers().set(CONTENT_TYPE, "application/json");
-                if (HttpUtil.isKeepAlive(req)) {
-                    HttpUtil.setKeepAlive(res, true);
-                }
-                ctx.write(res); // 응답 헤더 전송
-
-                HttpContent cont = new DefaultHttpContent(Unpooled.copiedBuffer(content.getBytes()));
-                ctx.write(cont);
-
-                ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-                if (!HttpUtil.isKeepAlive(req)) {
-                    f.addListener(ChannelFutureListener.CLOSE);
-                }
-                */
             }
             else if (req.method() == HttpMethod.GET) {
                 try {
@@ -99,6 +78,7 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
             }
         }
         else {
+            req.retain();
             ctx.fireChannelRead(req);
         }
     }
