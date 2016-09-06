@@ -27,11 +27,12 @@ public class HttpStaticFileHandler extends SimpleChannelInboundHandler<FullHttpR
         super(false);
         this.path = ROOT_DIR+path;
     }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         // TODO: Pass Static Files??!!?!? Only in resDir
-        if(req.getMethod().equals(HttpMethod.GET)) {
-            this.filename = req.getUri();
+        if(req.method().equals(HttpMethod.GET)) {
+            this.filename = req.uri();
             if(!filename.endsWith(CHECK_JS) && !filename.endsWith(CHECK_CSS)) {
                 //불러올수 없음을 처리
                 sendError(ctx, HttpResponseStatus.NOT_ACCEPTABLE);
@@ -46,7 +47,7 @@ public class HttpStaticFileHandler extends SimpleChannelInboundHandler<FullHttpR
                 return;
             }
 
-            RandomAccessFile raf = new RandomAccessFile(this.path + this.filename, "r");
+            RandomAccessFile raf = new RandomAccessFile(checkfile, "r");
 
             HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
             HttpUtil.setContentLength(res, raf.length());
@@ -63,8 +64,6 @@ public class HttpStaticFileHandler extends SimpleChannelInboundHandler<FullHttpR
             if (!HttpUtil.isKeepAlive(req)) {
                 f.addListener(ChannelFutureListener.CLOSE);
             }
-
-
         }
         else {
             req.retain();
