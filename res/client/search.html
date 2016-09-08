@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/opensource/bootstrap.min.css">
+    <script src="/opensource/angular.min.js"></script>
+    <script src="/opensource/ui-bootstrap-2.1.3.min.js"></script>
+</head>
+<body>
+<div ng-app="myTeamSearch">
+    <div ng-controller="SearchCtrl" ng-switch="ref">
+        <form class="well form-search">
+            <label>검색 조건</label>
+            <h5>랭크점수대
+                <select ng-model="searchMMR" ng-options="score for score in scoreRange"></select>
+            <!--</h5>
+            <h5>-->
+                <input type="checkbox" ng-model="usingMike" ng-init="false"/>마이크 사용 여부
+                <select ng-model="playType" ng-options="type for type in playHeroType">
+                    <option value="">-- 너가 원하는 유저의 플레이 유형 --</option>
+                </select>
+
+                <button type="submit" class="btn" ng-click="search()">검색</button>
+            </h5>
+        </form>
+        <pre ng-init="result='원하는 점수대를 선택해주세요'">{{result}}</pre>
+        <div ng-model="rt_BT">
+
+        </div>
+        <script src="/custom/search.js"></script>
+    </div>
+</div>
+</body>
+</html>
