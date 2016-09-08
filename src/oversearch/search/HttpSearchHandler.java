@@ -34,8 +34,7 @@ public class HttpSearchHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         }
         else {
-            req.retain();
-            ctx.fireChannelRead(req);
+            ctx.fireChannelRead(req.retain());
         }
     }
 

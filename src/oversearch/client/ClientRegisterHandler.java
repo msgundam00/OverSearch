@@ -47,32 +47,26 @@ public class ClientRegisterHandler extends SimpleChannelInboundHandler<FullHttpR
                 ctx.writeAndFlush(res);
             }
             else if (req.method() == HttpMethod.GET) {
-                try {
-                    RandomAccessFile raf = new RandomAccessFile(ROOT_DIR + "/res/client/register00.html", "r");
+                RandomAccessFile raf = new RandomAccessFile(ROOT_DIR + "/res/client/register00.html", "r");
 
-                    HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
-                    HttpUtil.setContentLength(res, raf.length());
-                    res.headers().set(CONTENT_TYPE, "text/html");
-                    if (HttpUtil.isKeepAlive(req)) {
-                        HttpUtil.setKeepAlive(res, true);
-                    }
-                    ctx.write(res); // 응답 헤더 전송
-
-                    ctx.write(new DefaultFileRegion(raf.getChannel(), 0, raf.length()));
-
-                    ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-                    if (!HttpUtil.isKeepAlive(req)) {
-                        f.addListener(ChannelFutureListener.CLOSE);
-                    }
+                HttpResponse res = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
+                HttpUtil.setContentLength(res, raf.length());
+                res.headers().set(CONTENT_TYPE, "text/html");
+                if (HttpUtil.isKeepAlive(req)) {
+                    HttpUtil.setKeepAlive(res, true);
                 }
-                finally {
-                    req.retain();
+                ctx.write(res); // 응답 헤더 전송
+
+                ctx.write(new DefaultFileRegion(raf.getChannel(), 0, raf.length()));
+
+                ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+                if (!HttpUtil.isKeepAlive(req)) {
+                    f.addListener(ChannelFutureListener.CLOSE);
                 }
             }
         }
         else {
-            req.retain();
-            ctx.fireChannelRead(req);
+            ctx.fireChannelRead(req.retain());
         }
     }
 
