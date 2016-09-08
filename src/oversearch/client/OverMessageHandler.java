@@ -16,9 +16,16 @@ public class OverMessageHandler extends SimpleChannelInboundHandler<OverMessage>
         this.pool = pool;
     }
 
+
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().writeAndFlush(new OverMessage("HELO", "Admin"));
+        pool.getChannel().add(ctx.channel());
+    }
+
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ctx.writeAndFlush(new OverMessage("HELO", "Admin"));
+        ctx.channel().writeAndFlush(new OverMessage("HELO", "Admin"));
         pool.getChannel().add(ctx.channel());
     }
 

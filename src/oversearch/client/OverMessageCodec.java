@@ -12,7 +12,7 @@ import java.util.List;
 public class OverMessageCodec extends MessageToMessageCodec<TextWebSocketFrame, OverMessage> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, OverMessage m, List<Object> list) throws Exception {
-        list.add(m.toString());
+        list.add(new TextWebSocketFrame(m.toString()));
     }
 
     @Override
