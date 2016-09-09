@@ -36,5 +36,15 @@ myApp.controller('SearchCtrl', ['$scope', '$http', '$window', function($scope, $
         $scope.messages = [];
         var ws = $window.ws = new WebSocket($scope.wsUrl);
 
+        ws.onopen = function() {
+            console.log("ws open");
+            $scope.connected = true;
+            ws.send("IM "+$scope.wsID);
+        };
+        ws.onclose = function() {
+            console.log("ws close"); $scope.connected = false;
+            //message({type: "info", text: "연결이 끊겼습니다."});
+        };
+
     }
 }]);
