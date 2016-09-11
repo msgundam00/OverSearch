@@ -11,6 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="io.netty:netty-all:4.1.4.Final" level="project" />
     <orderEntry type="library" name="org.jsoup:jsoup:1.9.2" level="project" />
+    <torderEntry type="library" name="com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
         <CLASSES>
