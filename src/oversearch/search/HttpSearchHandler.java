@@ -2,6 +2,7 @@ package oversearch.search;
 
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
+import io.netty.util.CharsetUtil;
 import oversearch.client.ClientPoolWSHandler;
 import oversearch.client.OverClient;
 
@@ -29,7 +30,7 @@ public class HttpSearchHandler extends SimpleChannelInboundHandler<FullHttpReque
         if (path.equals(req.uri())) {
             if (req.method() == HttpMethod.POST) {
                 // TODO: Parse SearchOpt
-                OverSearchOpt opt = new OverSearchOpt(req.content().toString());
+                OverSearchOpt opt = new OverSearchOpt(req.content().toString(CharsetUtil.UTF_8));
                 searchClients(opt);
             }
             else if (req.method() == HttpMethod.GET) {
